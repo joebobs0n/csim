@@ -14,18 +14,18 @@ argparse getArgs(int argc, char** argv) {
     std::string epilog = "This is my epilog";
     argparse ap = argparse(description, epilog);
 
-    std::string args_header = cform::underline + "Arguments:" + cform::end;
-    std::shared_ptr<argument_group> arg = ap.add_argument_group(args_header);
-    arg->arg_group.add_options()
+    std::string args_header = cform::underline + "Arguments" + cform::end;
+    po::options_description* arg = ap.add_argument_group(args_header);
+    arg->add_options()
         (
             "foobar,f",
-            po::value<double>()->value_name("double")->default_value(1.0)->required()->multitoken(),
+            po::value<float>()->value_name("float")->required(),
             "Test argument."
         );
 
-    std::string flags_header = cform::underline + "Flags:" + cform::end;
-    std::shared_ptr<argument_group> flg = ap.add_argument_group(flags_header);
-    flg->arg_group.add_options()
+    std::string flags_header = cform::underline + "Flags" + cform::end;
+    po::options_description* flg = ap.add_argument_group(flags_header);
+    flg->add_options()
         ("verbose,v", "Run in verbose mode.")
         ("help,h", "Print this help message and exit");
 
@@ -34,8 +34,9 @@ argparse getArgs(int argc, char** argv) {
 }
 
 int main(int argc, char** argv) {
+    argparse args = getArgs(argc, argv);
+
     try {
-        argparse args = getArgs(argc, argv);
 
     } catch (peaceful_ex& e) {
         return 0;
