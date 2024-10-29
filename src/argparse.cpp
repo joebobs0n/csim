@@ -1,8 +1,15 @@
-#include "argparse.h"
+#include "argparse.hpp"
 
+peaceful_ex::peaceful_ex()
+    : message_("peaceful exception thrown") {}
 
-argparse::argparse()
-    : description_(""), epilog_("") {}
+peaceful_ex::peaceful_ex(const std::string& message, const int& err_code = 1)
+    : message_(message) {}
+
+peaceful_ex::~peaceful_ex() {}
+
+std::string& peaceful_ex::what() { return message_; }
+
 
 argparse::argparse(const std::string& description, const std::string& epilog)
     : description_(description), epilog_(epilog) {}
@@ -23,33 +30,17 @@ po::options_description* argparse::add_argument_group(std::string& name) {
     return &argument_groups_[argument_groups_.size() - 1];
 }
 
-void argparse::print_usage(char** argv) {
-    std::cout << "usage: " << argv[0] << " ";
-    for (auto arg : all_options.options()) {
-        bool is_required = arg->semantic()->is_required();
-        std::cout << arg->format_parameter() << std::endl;
-    }
-}
-
 void argparse::print_help(char** argv) {
-    print_usage(argv);
-    if (description_ != "") {
-        std::cout << description_ << std::endl << std::endl;
-    }
-    std::cout << all_options << std::endl;
-    if (epilog_ != "") {
-        std::cout << epilog_ << std::endl;
-    }
+    if (description_ != "") std::cout << std::endl << description_ << std::endl;
+    std::cout << all_options;
+    if (epilog_ != "") std::cout << std::endl << epilog_ << std::endl;
     throw peaceful_ex();
 }
 
-po::variables_map argparse::parse_args(int argc, char** argv) {
-    po::variables_map vm;
-
-    for (auto ag : argument_groups_) { all_options.add(ag); }
+po::variables_map* argparse::parse_args(int argc, char** argv) {
+    for (auto ag : argument_groups_) all_options.add(ag);
     po::store(po::parse_command_line(argc, argv, all_options), vm);
+    if (vm.count("help")) print_help(argv);
     po::notify(vm);
-    if (vm.count("help")) { print_help(argv); }
-
-    return vm;
+    return &vm;
 }

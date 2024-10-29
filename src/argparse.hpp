@@ -1,0 +1,52 @@
+#pragma once
+#ifndef ARGPARSE_H
+#define ARGPARSE_H
+
+#include <iostream>
+#include <string>
+#include <memory>
+#include <optional>
+#include <boost/program_options.hpp>
+#include <boost/any.hpp>
+
+#include "logger.hpp"
+
+namespace po = boost::program_options;
+
+class peaceful_ex : public std::exception {
+private:
+    std::string message_;
+
+public:
+    peaceful_ex();
+    peaceful_ex(const std::string& message, const int& err_code);
+    ~peaceful_ex();
+
+    std::string& what();
+};
+
+class argparse {
+private:
+    std::string description_;
+    std::string epilog_;
+    std::vector<po::options_description> argument_groups_;
+    po::options_description all_options;
+    po::variables_map vm;
+
+public:
+    argparse(const std::string& description = "", const std::string& epilog = "");
+    ~argparse();
+
+    void add_description(std::string& message);
+    void add_epilog(std::string& message);
+    po::options_description* add_argument_group(std::string& name);
+
+    void print_help(char** argv);
+    po::variables_map* parse_args(int argc, char** argv);
+
+    template <typename T>
+    T get(const std::string &key) { return vm[key].as<T>(); }
+    bool flag(const std::string &key) { return bool(vm.count(key)); }
+};
+
+#endif

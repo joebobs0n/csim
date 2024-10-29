@@ -29,12 +29,12 @@ public:
 
     ~logger();
 
-    void info(const std::string& message);
-    void verbose(const std::string& message);
-    void warning(const std::string& message);
-    void fatal(const std::string& message, int err_code);
+    void info(const std::string &message);
+    void verbose(const std::string &message);
+    void warning(const std::string &message);
+    void fatal(const std::string &message, int err_code);
 
-    void setVerbosity(bool& vflag);
+    void setVerbosity(bool vflag);
 
 private:
     bool vflag_;
