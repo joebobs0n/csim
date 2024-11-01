@@ -1,11 +1,12 @@
 #pragma once
-#ifndef LOGGER_H
-#define LOGGER_H
+#ifndef _LOGGER_HPP_
+#define _LOGGER_HPP_
 
 #define CTYPE std::string
 #define COLOR const static CTYPE
 
 #include <string>
+#include <sstream>
 #include <iostream>
 
 namespace cform {
@@ -24,9 +25,7 @@ namespace cform {
 
 class logger {
 public:
-    logger();
-    logger(bool& vflag);
-
+    logger(const std::string &scriptname = "unset", const bool vflag = false);
     ~logger();
 
     void info(const std::string &message);
@@ -34,10 +33,11 @@ public:
     void warning(const std::string &message);
     void fatal(const std::string &message, int err_code);
 
-    void setVerbosity(bool vflag);
-
 private:
+    std::string scriptname_;
     bool vflag_;
+
+    void base_(const std::string &pre, const std::string &message, std::ostream &stream);
 };
 
 #endif

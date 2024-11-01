@@ -1,30 +1,39 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <boost/timer/timer.hpp>
+#include <filesystem>
 
 #include "argparse.hpp"
 #include "logger.hpp"
+#include "helpers.hpp"
 
+namespace po = boost::program_options;
+namespace fs = std::filesystem;
 
-logger Log = logger();
+static logger Log;
 
 argparse getArgs(int argc, char** argv) {
-    std::string description = "";
-    std::string epilog = "";
-    argparse ap(description, epilog);
+    std::stringstream description;
+    description << cform::green << "C++ Circuit Simulator (CCS)" << cform::end;
+    description << " is an attempt at creating a netlist (spice) circuit simulator from scratch.";
+
+    std::stringstream epilog;
+
+    argparse ap(description.str(), epilog.str());
 
     std::string args_header = cform::underline + "Arguments" + cform::end;
     po::options_description* arg = ap.add_argument_group(args_header);
-    arg->add_options();
+    arg->add_options()
+        ("design,d", po::value<fs::path>()->value_name("path"), "Path to design/circuit netlist.")
+        ("techfile,t", po::value<fs::path>()->value_name("path")->default_value("../src/models.hpp"), "Path to device models file.");
 
     std::string flags_header = cform::underline + "Flags" + cform::end;
     po::options_description* flg = ap.add_argument_group(flags_header);
     flg->add_options()
-        ("verbose,v", "Run in verbose mode.")
+        ("verbose,V", "Run in verbose mode.")
         ("help,h", "Print this help message and exit");
 
-    ap.parse_args(argc, argv);
+    po::variables_map vm = ap.parse_args(argc, argv);
     return ap;
 }
 
@@ -36,8 +45,10 @@ int run(argparse args) {
 int main(int argc, char** argv) {
     try {
         argparse args = getArgs(argc, argv);
-        Log.setVerbosity(args.flag("verbose"));
-        boost::timer::auto_cpu_timer t(3, "Runtime: %w sec\n");
+
+        Timer(cform::green + "Runtime" + cform::end);
+        Log = logger(fs::path(argv[0]).stem(), args.flag("verbose"));
+
         return run(args);
     } catch (peaceful_ex& e) {
         return 0;
@@ -46,5 +57,5 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    return 255;
+    return 0xFF;
 }

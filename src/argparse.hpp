@@ -1,13 +1,10 @@
 #pragma once
-#ifndef ARGPARSE_H
-#define ARGPARSE_H
+#ifndef _ARGPARSE_HPP_
+#define _ARGPARSE_HPP_
 
 #include <iostream>
 #include <string>
-#include <memory>
-#include <optional>
 #include <boost/program_options.hpp>
-#include <boost/any.hpp>
 
 #include "logger.hpp"
 
