@@ -10,14 +10,14 @@
 
 namespace po = boost::program_options;
 
-class peaceful_ex : public std::exception {
+class peaceful_exception : public std::exception {
 private:
     std::string message_;
 
 public:
-    peaceful_ex();
-    peaceful_ex(const std::string& message, const int& err_code);
-    ~peaceful_ex();
+    peaceful_exception();
+    peaceful_exception(const std::string& message, const int& err_code);
+    ~peaceful_exception();
 
     std::string& what();
 };

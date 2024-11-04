@@ -24,13 +24,25 @@ argparse getArgs(int argc, char** argv) {
     std::string args_header = cform::underline + "Arguments" + cform::end;
     po::options_description* arg = ap.add_argument_group(args_header);
     arg->add_options()
-        ("design,d", po::value<fs::path>()->value_name("path"), "Path to design/circuit netlist.")
-        ("techfile,t", po::value<fs::path>()->value_name("path")->default_value("../src/models.hpp"), "Path to device models file.");
+        (
+            "design,d",
+            po::value<fs::path>()
+                ->value_name("path"),
+            "Path to design/circuit netlist."
+        )
+        (
+            "techfile,t",
+            po::value<fs::path>()
+                ->value_name("path")
+                ->default_value("../src/models.hpp"),
+            "Path to device models file."
+        );
 
     std::string flags_header = cform::underline + "Flags" + cform::end;
     po::options_description* flg = ap.add_argument_group(flags_header);
     flg->add_options()
         ("verbose,V", "Run in verbose mode.")
+        ("quiet,Q", "Run in quiet mode.")
         ("help,h", "Print this help message and exit");
 
     po::variables_map vm = ap.parse_args(argc, argv);
@@ -45,12 +57,18 @@ int run(argparse args) {
 int main(int argc, char** argv) {
     try {
         argparse args = getArgs(argc, argv);
-
         Timer(cform::green + "Runtime" + cform::end);
-        Log = logger(fs::path(argv[0]).stem(), args.flag("verbose"));
-
+        RedirectPrintouts rp(
+            args.flag("quiet") ? "/dev/null" : "",
+            args.flag("quiet") ? "/dev/null" : ""
+        );
+        Log = logger(
+            fs::path(__FILE__).stem(),
+            args.flag("verbose")
+        );
         return run(args);
-    } catch (peaceful_ex& e) {
+
+    } catch (peaceful_exception& e) {
         return 0;
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;

@@ -1,14 +1,14 @@
 #include "argparse.hpp"
 
-peaceful_ex::peaceful_ex()
+peaceful_exception::peaceful_exception()
     : message_("peaceful exception thrown") {}
 
-peaceful_ex::peaceful_ex(const std::string& message, const int& err_code = 1)
+peaceful_exception::peaceful_exception(const std::string& message, const int& err_code = 1)
     : message_(message) {}
 
-peaceful_ex::~peaceful_ex() {}
+peaceful_exception::~peaceful_exception() {}
 
-std::string& peaceful_ex::what() { return message_; }
+std::string& peaceful_exception::what() { return message_; }
 
 
 argparse::argparse(const std::string& description, const std::string& epilog)
@@ -34,7 +34,7 @@ void argparse::print_help(char** argv) {
     if (description_ != "") std::cout << std::endl << description_ << std::endl;
     std::cout << all_options;
     if (epilog_ != "") std::cout << std::endl << epilog_ << std::endl;
-    throw peaceful_ex();
+    throw peaceful_exception();
 }
 
 po::variables_map* argparse::parse_args(int argc, char** argv) {

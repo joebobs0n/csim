@@ -24,6 +24,12 @@ namespace cform {
 }
 
 class logger {
+private:
+    std::string scriptname_;
+    bool vflag_;
+
+    void base_(const std::string &pre, const std::string &message, std::ostream &stream);
+
 public:
     logger(const std::string &scriptname = "unset", const bool vflag = false);
     ~logger();
@@ -32,12 +38,6 @@ public:
     void verbose(const std::string &message);
     void warning(const std::string &message);
     void fatal(const std::string &message, int err_code);
-
-private:
-    std::string scriptname_;
-    bool vflag_;
-
-    void base_(const std::string &pre, const std::string &message, std::ostream &stream);
 };
 
 #endif

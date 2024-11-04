@@ -29,6 +29,7 @@ void logger::fatal(const std::string &message, int err_code = 1) {
 }
 
 void logger::base_(const std::string &pre, const std::string &message, std::ostream &stream) {
-    std::string sname = cform::dark_gray + "[ " + scriptname_ + " ]" + cform::end;
-    stream << pre << " " << sname << " " << message << std::endl;
+    stream << pre << " "
+        << cform::dark_gray << "[ " << scriptname_ << " ]" << cform::end
+        << " " << message << std::endl;
 }
