@@ -30,7 +30,7 @@ enable_testing()
 find_package(GTest)
 include(GoogleTest)
 
-set(UT_NAME ut_suite)
+set(UT_NAME unittests)
 set(GTEST_LIBS GTest::gtest_main)
 
 add_executable(${UT_NAME} src/unittests.cc)
