@@ -7,6 +7,8 @@
 #include "logger.hpp"
 #include "helpers.hpp"
 
+#include "models.hpp"
+
 namespace po = boost::program_options;
 namespace fs = std::filesystem;
 
@@ -43,7 +45,7 @@ argparse getArgs(int argc, char** argv) {
     flg->add_options()
         ("verbose,V", "Run in verbose mode.")
         ("quiet,Q", "Run in quiet mode.")
-        ("help,h", "Print this help message and exit");
+        ("help,h", "Print this help messagem and exit");
 
     po::variables_map vm = ap.parse_args(argc, argv);
     return ap;
@@ -58,19 +60,17 @@ int main(int argc, char** argv) {
     try {
         argparse args = getArgs(argc, argv);
         Timer(cform::green + "Runtime" + cform::end);
+
+        Log = logger(fs::path(__FILE__).stem(), args.flag("verbose"));
         RedirectPrintouts rp(
             args.flag("quiet") ? "/dev/null" : "",
             args.flag("quiet") ? "/dev/null" : ""
         );
-        Log = logger(
-            fs::path(__FILE__).stem(),
-            args.flag("verbose")
-        );
-        return run(args);
 
-    } catch (peaceful_exception& e) {
+        return run(args);
+    } catch (peaceful_exception &e) {
         return 0;
-    } catch (std::exception& e) {
+    } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
         return 1;
     }

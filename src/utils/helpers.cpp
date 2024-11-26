@@ -3,7 +3,8 @@
 Timer::Timer(const std::string &title, bool plain, const std::string &color) {
     std::stringstream formatted;
     if (!plain) formatted << std::endl << title << ": ";
-    formatted << color << "%w" << cform::end << std::endl;
+    formatted << color << "%w" << cform::end;
+    if (!plain) formatted << " seconds" << std::endl;
     static auto t_ = boost::timer::auto_cpu_timer(6, formatted.str());
 }
 
